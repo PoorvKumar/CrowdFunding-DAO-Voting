@@ -107,6 +107,11 @@ contract DonationPlatform {
 
         if (sent) {
             campaign.data.amountCollected += amount;
+            // Check if the target has been reached
+            if (campaign.data.amountCollected >= campaign.data.target) {
+                // Automatically close the campaign
+                campaign.data.isOpen = false;
+            }
         } else {
             // Handle transfer failure, revert the transaction or take appropriate action
             revert("Ether transfer failed.");

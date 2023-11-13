@@ -5,9 +5,10 @@ import { ethers } from "ethers";
 const StateContext = createContext();
 
 export const StateContextProvider = ({ children }) => {
-    const { contract } = useContract('0x9bd4B01e3Aeb8B35F75D4BF779f7A05EE3dBDE80');
+    const { contract } = useContract('0x561b4Fb036D860AE83Aebc310958EddFD999d1E4');
     const { mutateAsync: createRequest } = useContractWrite(contract, 'createRequest');
     const { mutateAsync: voteOnCampaignMutation } = useContractWrite(contract, 'voteOnCampaign');
+    const { mutateAsync: donateToCampaignMutation } = useContractWrite(contract, 'donateToCampaign');
     const address = useAddress();
     const connect = useMetamask();
 
@@ -114,7 +115,41 @@ export const StateContextProvider = ({ children }) => {
             console.error('Error voting:', error);
         }
     };
+
+    const donateToCampaign = async (_id, _amount) => {
+        try {
+          const data = await contract.call('donateToCampaign', [_id], { value: ethers.utils.parseEther(_amount) });
+          console.log(`Successfully donated ${_amount} ETH to campaign`, data);
+        } catch (error) {
+          console.error('Error donating:', error);
+        }
+      };
+
+    const getCampaignsCreatedByUser = async () => {
+        const campaignsCreatedByUser = await contract.call('getCampaignsCreatedByUser');
+        return campaignsCreatedByUser;
+    }
+
+    const getCampaignsDonatedByUser = async () => {
+        const campaignsDonatedByUser = await contract.call('getCampaignsDonatedByUser');
+        return campaignsDonatedByUser;
+    }
+
+    const getDonations = async (pId) => {
+        const donations = await contract.call('getDonators', [pId]);
+        const numberOfDonations = donations[0].length;
     
+        const parsedDonations = [];
+    
+        for(let i = 0; i < numberOfDonations; i++) {
+          parsedDonations.push({
+            donator: donations[0][i],
+            donation: ethers.utils.formatEther(donations[1][i].toString())
+          })
+        }
+    
+        return parsedDonations;
+      }
 
     return (
         <StateContext.Provider
@@ -125,6 +160,10 @@ export const StateContextProvider = ({ children }) => {
                 createRequest: publishCampaign,
                 getCampaigns,
                 voteOnCampaign,
+                donateToCampaign,
+                getCampaignsCreatedByUser,
+                getCampaignsDonatedByUser,
+                getDonations,
             }}
         >
             {children}

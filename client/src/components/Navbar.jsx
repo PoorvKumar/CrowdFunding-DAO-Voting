@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { CustomButton } from "./";
 import { logo, menu, search, thirdweb } from "../assets";
 import { navlinks } from "../constants";
@@ -12,6 +12,11 @@ const Navbar = () => {
   const [toggleDrawer, setToggleDrawer] = useState(false);
 
   const { connect, address } = useStateContext();
+
+  useEffect(()=>
+  {
+    console.log(address);
+  },[address])
 
   return (
     <div className='flex md:flex-row flex-col-reverse justify-between mb-[35px] gap-6'>

@@ -52,7 +52,7 @@ contract DonationPlatform {
         request.data.description = _description;
         request.data.target = _target;
         request.data.votingEndTime = block.timestamp + votingDuration;
-        request.data.deadline = block.timestamp + _deadline;
+        request.data.deadline = _deadline;
         request.data.amountCollected = 0;
         request.data.image = _image;
         request.data.isApproved = false;
@@ -94,22 +94,54 @@ contract DonationPlatform {
     function donateToCampaign(uint256 _id) public payable {
         Campaign storage campaign = campaigns[_id];
 
-        require(campaign.data.isApproved, "This campaign has not been approved yet.");
+        require(block.timestamp < campaign.data.deadline, "Campaign deadline has passed.");
         require(campaign.data.isOpen, "This campaign is closed.");
+        require(campaign.data.approvalCount > campaign.data.rejectCount, "This campaign has not been approved yet.");
 
         uint256 amount = msg.value;
 
         campaign.donators.push(msg.sender);
         campaign.donations.push(amount);
-        campaign.data.amountCollected += amount;
 
-        campaign.data.owner.transfer(amount);
+        (bool sent,) = payable(campaign.data.owner).call{value: amount}("");
+
+        if (sent) {
+            campaign.data.amountCollected += amount;
+        } else {
+            // Handle transfer failure, revert the transaction or take appropriate action
+            revert("Ether transfer failed.");
+        }
 
         campaignsDonatedByUser[msg.sender].push(_id);
     }
 
     function getDonators(uint256 _id) public view returns (address[] memory, uint256[] memory) {
         return (campaigns[_id].donators, campaigns[_id].donations);
+    }
+
+    function getCampaignById(uint256 _id) public view returns (CampaignData memory) {
+        Campaign storage campaign = campaigns[_id];
+        CampaignData memory campaignData = campaign.data; // Copy data to memory
+
+        // Check if the voting time has ended
+        if (block.timestamp >= campaignData.votingEndTime && campaignData.isOpen) {
+            campaignData.isOpen = campaignData.approvalCount > campaignData.rejectCount;
+
+            if (campaignData.isOpen) {
+                campaignData.isApproved = campaignData.approvalCount > campaignData.rejectCount;
+            }
+        }
+
+        // Check if the deadline has passed
+        if (block.timestamp >= campaignData.deadline) {
+            campaignData.isOpen = campaignData.approvalCount > campaignData.rejectCount;
+
+            if (campaignData.isOpen) {
+                campaignData.isApproved = campaignData.approvalCount > campaignData.rejectCount;
+            }
+        }
+
+        return campaignData;
     }
 
     function getCampaigns() public view returns (CampaignData[] memory) {
@@ -147,7 +179,14 @@ contract DonationPlatform {
         return campaignsCreatedByUser[msg.sender];
     }
 
-    function getCampaignsDonatedByUser() public view returns (uint256[] memory) {
-        return campaignsDonatedByUser[msg.sender];
+    function getCampaignsDonatedByUser() public view returns (CampaignData[] memory) {
+        uint256[] storage campaignIndices = campaignsDonatedByUser[msg.sender];
+        CampaignData[] memory userDonatedCampaigns = new CampaignData[](campaignIndices.length);
+
+        for (uint256 i = 0; i < campaignIndices.length; i++) {
+            userDonatedCampaigns[i] = getCampaignById(campaignIndices[i]);
+        }
+
+        return userDonatedCampaigns;
     }
 }

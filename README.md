@@ -24,16 +24,16 @@ Welcome to the Smart Contract Donation Platform (DAO) dApp! This decentralized a
 ## Screenshots
 
 ### Home Page
-![home](https://github.com/PoorvKumar/CrowdFunding-DAO-Voting/assets/55318092/f8638e2a-6c62-40ab-b6d3-f31ba09c6c5b)
+![home](https://github.com/PoorvKumar/CrowdFunding-DAO-Voting/assets/55318092/77df2f2d-5211-4a31-80b9-d60d24e5e5b6)
 
 ### Create Campaign
-![create-campaign](https://github.com/PoorvKumar/CrowdFunding-DAO-Voting/assets/55318092/1c8e2930-8d31-4828-8893-7545ab74ce07)
+![create-campaign](https://github.com/PoorvKumar/CrowdFunding-DAO-Voting/assets/55318092/8fef9523-a04b-40d0-88db-70e0aaa0002a)
 
 ### Campaign Details
-![campaign-details](https://github.com/PoorvKumar/CrowdFunding-DAO-Voting/assets/55318092/0327749f-de42-4fdc-a3be-6a3900938e03)
+![campaign-details](https://github.com/PoorvKumar/CrowdFunding-DAO-Voting/assets/55318092/990e4d25-2637-4a01-9578-31b219ad9122)
 
 ### Profile Page
-![profile](https://github.com/PoorvKumar/CrowdFunding-DAO-Voting/assets/55318092/3bbd548a-d128-42f2-ac3b-cba1be69f02e)
+![profile](https://github.com/PoorvKumar/CrowdFunding-DAO-Voting/assets/55318092/6737b7d7-7e67-4762-903b-f3a305a3182f)
 
 ## Getting Started
 

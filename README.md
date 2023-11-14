@@ -4,6 +4,8 @@ Welcome to the Smart Contract Donation Platform (DAO) dApp! This decentralized a
 
 ## Depolyed at :
 https://crowd-funding-dao.vercel.app/
+- Presentation: [Donation_Platform](https://github.com/PoorvKumar/CrowdFunding-DAO-Voting/files/13350199/S20210010178_Donation_Platform.pdf)
+
 
 ## Features
 
